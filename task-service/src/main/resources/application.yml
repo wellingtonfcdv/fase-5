@@ -1,29 +1,14 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://ep-wild-shadow-anrdotgw-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-    username: neondb_owner
-    password: npg_FmYquD1yOPW8
-    driver-class-name: org.postgresql.Driver
-
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 30000
-      connection-timeout: 30000
-      max-lifetime: 600000
-      pool-name: HikariCP
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: info,health
+  application:
+    name: task-service
+  config:
+    # Usamos o 'import' sem o 'optional:' para garantir que ele trave se não ler o servidor
+    import: "configserver:http://localhost:8888"
+  cloud:
+    config:
+      fail-fast: true # Força a aplicação a parar se não conseguir as configs
+      retry:
+        max-attempts: 5
+  main:
+    # Permite que as configs do servidor sobrescrevam qualquer tentativa local falha
+    allow-bean-definition-overriding: true
